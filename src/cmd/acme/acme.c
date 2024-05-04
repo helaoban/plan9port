@@ -11,6 +11,8 @@
 #include <libsec.h>
 #include "dat.h"
 #include "fns.h"
+#include "config.h"
+
 	/* for generating syms in mkfile only: */
 	#include <bio.h>
 	#include "edit.h"
