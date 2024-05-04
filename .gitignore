@@ -294,3 +294,9 @@ state.journal
 state.old
 unix/*.tgz
 y.tab.[ch]
+
+
+
+# helaoban
+
+.env.d/

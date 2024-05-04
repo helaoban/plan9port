@@ -1,0 +1,11 @@
+#!/bin/sh
+
+envdir="${srctree}/.env.d"
+
+rm -rf "$envdir"
+mkdir -p "$envdir/bin"
+
+ln -s "${srctree}/bin/9" "${envdir}/bin/9"
+
+PLAN9="${srctree}" PATH="${envdir}/bin:${PATH}:${srctree}/bin" \
+guix shell --manifest=manifest.scm --development plan9port-helaoban
