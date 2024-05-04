@@ -13,9 +13,9 @@
 #include "fns.h"
 #include "config.h"
 
-	/* for generating syms in mkfile only: */
-	#include <bio.h>
-	#include "edit.h"
+/* for generating syms in mkfile only: */
+#include <bio.h>
+#include "edit.h"
 
 void	mousethread(void*);
 void	keyboardthread(void*);
