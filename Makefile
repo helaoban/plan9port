@@ -6,6 +6,8 @@ export srctree
 %:
 	@echo read the README file
 
+all: build
+
 env:
 	@ ./env
 

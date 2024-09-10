@@ -1,11 +1,21 @@
 #!/bin/sh
 
+
+# Here we are creating a special .env.d dir with a bin dir
+# where we symlink the '9' binary from this project, which
+# in turn promotes this project's bin directory to the front of 
+# path. This way we can be specific when we want to find binaries
+# built in this project, but also when we want to prioritized binaries
+# that share the same name from this project with those from utilities
+# already on the system. Many of plan9port's binaries share the same
+# name (and functionality) with existing common unix utilities.
+
 envdir="${srctree}/.env.d"
 
-rm -rf "$envdir"
-mkdir -p "$envdir/bin"
+mkdir -p "${envdir}/bin"
+rm -rf "${envdir}/real-*"
 
-ln -s "${srctree}/bin/9" "${envdir}/bin/9"
+ln -s "${srctree}/bin/9" "${envdir}/bin/real-9"
 
-PLAN9="${srctree}" PATH="${envdir}/bin:${PATH}:${srctree}/bin" \
+PLAN9="${srctree}" PATH="${envdir}/bin:${PATH}" \
 guix shell --manifest=manifest.scm --development plan9port-helaoban
