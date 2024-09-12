@@ -11,11 +11,9 @@
 #include <libsec.h>
 #include "dat.h"
 #include "fns.h"
-#include "config.h"
-
-/* for generating syms in mkfile only: */
-#include <bio.h>
-#include "edit.h"
+	/* for generating syms in mkfile only: */
+	#include <bio.h>
+	#include "edit.h"
 
 void	mousethread(void*);
 void	keyboardthread(void*);
@@ -1041,36 +1039,19 @@ iconinit(void)
 	Image *tmp;
 
 	if(tagcols[BACK] == nil) {
-
 		/* Blue */
-		/* tagcols[BACK] = allocimagemix(display, DPalebluegreen, DWhite); */
-		/* tagcols[HIGH] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DPalegreygreen); */
-		/* tagcols[BORD] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DPurpleblue); */
-		/* tagcols[TEXT] = display->black; */
-		/* tagcols[HTEXT] = display->black; */
+		tagcols[BACK] = allocimagemix(display, DPalebluegreen, DWhite);
+		tagcols[HIGH] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DPalegreygreen);
+		tagcols[BORD] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DPurpleblue);
+		tagcols[TEXT] = display->black;
+		tagcols[HTEXT] = display->black;
 
-		/* /\* Yellow *\/ */
-		/* textcols[BACK] = allocimagemix(display, DPaleyellow, DWhite); */
-		/* textcols[HIGH] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DDarkyellow); */
-		/* textcols[BORD] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DYellowgreen); */
-		/* textcols[TEXT] = display->black; */
-		/* textcols[HTEXT] = display->black; */
-
-		tagcols[BACK]	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TAGBG);
-		tagcols[HIGH]	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TAGHLBG);
-		tagcols[BORD]	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_COLBUTTON);
-		tagcols[TEXT]	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TAGFG);
-		tagcols[HTEXT]	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TAGHLFG);
-
-		textcols[BACK] 	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TXTBG);
-		textcols[HIGH] 	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TXTHLBG);
-		textcols[BORD] 	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_SCROLLBG);
-		textcols[TEXT] 	= allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TXTFG);
-		textcols[HTEXT] = allocimage(display, Rect(0,0,1,1), RGBA32, 1, C_TXTHLFG);
-
-
-
-
+		/* Yellow */
+		textcols[BACK] = allocimagemix(display, DPaleyellow, DWhite);
+		textcols[HIGH] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DDarkyellow);
+		textcols[BORD] = allocimage(display, Rect(0,0,1,1), screen->chan, 1, DYellowgreen);
+		textcols[TEXT] = display->black;
+		textcols[HTEXT] = display->black;
 	}
 
 	r = Rect(0, 0, Scrollwid, font->height+1);
