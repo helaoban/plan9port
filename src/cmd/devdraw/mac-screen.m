@@ -45,6 +45,7 @@ static void	rpc_setmouse(Client*, Point);
 static void	rpc_topwin(Client*);
 static void	rpc_bouncemouse(Client*, Mouse);
 static void	rpc_flush(Client*, Rectangle);
+static void	rpc_setimposition(Client*, int, int);
 
 static ClientImpl macimpl = {
 	rpc_resizeimg,
@@ -54,7 +55,8 @@ static ClientImpl macimpl = {
 	rpc_setmouse,
 	rpc_topwin,
 	rpc_bouncemouse,
-	rpc_flush
+	rpc_flush,
+	rpc_setimposition
 };
 
 @class DrawView;
@@ -479,6 +481,12 @@ rpc_setcursor(Client *client, Cursor *c, Cursor2 *c2)
 		// https://en.wikipedia.org/wiki/Retina_display#Models
 		self.client->displaydpi = scale * 110;
 	}
+}
+
+// Not used in MAC
+static void
+rpc_setimposition(Client *client, int, int)
+{
 }
 
 // rpc_flush flushes changes to view.img's rectangle r

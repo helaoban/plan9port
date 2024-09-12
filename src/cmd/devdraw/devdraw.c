@@ -803,6 +803,17 @@ draw_datawrite(Client *client, void *v, int n)
 			if(!dst || !src || !mask)
 				goto Enodrawimage;
 			drawrectangle(&r, a+13);
+
+			/* text cursor width is 3 for DefaultDPI, and will be scaled with highDPI settings. 
+			 * but a lot of place drawn such a rectangle,
+			 * for example, every tag bar had such a text cursor.
+			 * So, it's not enough to update im spot here, still need to update it when string drawn
+			 */
+			int scale = round((float)client->displaydpi/DefaultDPI);
+			if(Dx(r) == 3 * (scale>1?scale:1))
+				client->impl->rpc_setimposition(client, r.max.x, r.max.y);
+
+
 			drawpoint(&p, a+29);
 			drawpoint(&q, a+37);
 			op = drawclientop(client);
@@ -1334,6 +1345,12 @@ draw_datawrite(Client *client, void *v, int n)
 			}
 			dst->clipr = clipr;
 			p.y -= font->ascent;
+
+
+			/* update im position after string drawn */
+			client->impl->rpc_setimposition(client, q.x, p.y+Dy(font->image->r));
+
+
 			dstflush(client, dstid, dst, Rect(p.x, p.y, q.x, p.y+Dy(font->image->r)));
 			continue;
 

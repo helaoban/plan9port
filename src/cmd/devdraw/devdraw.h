@@ -54,6 +54,7 @@ struct ClientImpl
 	void (*rpc_topwin)(Client*);
 	void (*rpc_bouncemouse)(Client*, Mouse);
 	void (*rpc_flush)(Client*, Rectangle);
+	void (*rpc_setimposition)(Client*, int, int);
 };
 
 extern QLock drawlk;
