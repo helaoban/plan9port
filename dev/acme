@@ -1,0 +1,27 @@
+#!/bin/sh
+
+passthrough=""
+NAMESPACE=ns.acme.0
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-n)
+			NAMESPACE=ns.acme.$2
+			shift
+			shift
+			;;
+		*)
+                      passthrough="$passthrough $1"
+			shift
+			;;
+	esac
+done
+
+
+export NAMESPACE
+mkdir -p "$NAMESPACE"
+
+eval "set -- $passthrough"
+
+9p ls plumb/ > /dev/null 2> /dev/null || (cd /; 9 plumber)
+exec 9 acme "$@"

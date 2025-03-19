@@ -24,6 +24,7 @@ void	xfidallocthread(void*);
 void	newwindowthread(void*);
 void	plumbproc(void*);
 int	timefmt(Fmt*);
+Rune parsemodkey(Rune r);
 
 Reffont	**fontcache;
 int		nfontcache;
@@ -465,6 +466,8 @@ keyboardthread(void *v)
 	alts[KKey].op = CHANRCV;
 	alts[NKALT].op = CHANEND;
 
+	modkey = Knokey;
+
 	timer = nil;
 	typetext = nil;
 	threadsetname("keyboardthread");
@@ -472,6 +475,7 @@ keyboardthread(void *v)
 		switch(alt(alts)){
 		case KTimer:
 			timerstop(timer);
+			modkey = Knokey;
 			t = typetext;
 			if(t!=nil && t->what==Tag){
 				winlock(t->w, 'K');
@@ -484,6 +488,8 @@ keyboardthread(void *v)
 			break;
 		case KKey:
 		casekeyboard:
+			modkey = parsemodkey(r);
+			print("KEY: %d\n", r);
 			typetext = rowtype(&row, r, mouse->xy);
 			t = typetext;
 			if(t!=nil && t->col!=nil && !(r==Kdown || r==Kleft || r==Kright))	/* scrolling doesn't change activecol */
@@ -501,6 +507,7 @@ keyboardthread(void *v)
 				alts[KTimer].c = nil;
 				alts[KTimer].op = CHANNOP;
 			}
+			/* try to pull another rune from the channel without waiting */
 			if(nbrecv(keyboardctl->c, &r) > 0)
 				goto casekeyboard;
 			flushimage(display, 1);
@@ -594,6 +601,10 @@ mousethread(void *v)
 			if(t==nil || m.buttons==0)
 				goto Continue;
 			but = 0;
+
+
+			print("CTL PRESSED: %d\n", m.buttons);
+
 			if(m.buttons == 1)
 				but = 1;
 			else if(m.buttons == 2)
@@ -619,9 +630,9 @@ mousethread(void *v)
 			/* scroll buttons, wheels, etc. */
 			if(w != nil && (m.buttons & (8|16))){
 				if(m.buttons & 8)
-					but = Kscrolloneup;
+					but = m.buttons & 2 ? Kscrollonedown : Kscrolloneup;
 				else
-					but = Kscrollonedown;
+					but = m.buttons & 2 ? Kscrolloneup : Kscrollonedown;
 				winlock(w, 'M');
 				t->eq0 = ~0;
 				texttype(t, but);
@@ -1183,4 +1194,14 @@ timefmt(Fmt *f)
 	tm = localtime(va_arg(f->args, ulong));
 	return fmtprint(f, "%04d/%02d/%02d %02d:%02d:%02d",
 		tm->year+1900, tm->mon+1, tm->mday, tm->hour, tm->min, tm->sec);
+}
+
+Rune
+parsemodkey(Rune r)
+{
+	if (r == Kctl)
+		return r;
+	if (r == Kcmd)
+		return r;
+	return Knokey;
 }

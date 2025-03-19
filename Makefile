@@ -1,7 +1,10 @@
 this-makefile	:= $(lastword $(MAKEFILE_LIST))
 srctree		:= $(realpath $(dir $(this-makefile)))
 
-export srctree
+# needed to compile with X-specific modules
+X11=$(GUIX_ENVIRONMENT)
+
+export srctree X11
 
 %:
 	@echo read the README file
@@ -16,8 +19,14 @@ install:
 	X11=$(GUIX_ENVIRONMENT) ./INSTALL -c
 
 full: build install
-
+ 
 acme:
-	9 acme -f "/mnt/font/DejaVuSansMono/11a/font"
+	cd dev && ./acme -f "/mnt/font/DejaVuSansMono/15a/font"
 
-.PHONY: env build install full acme
+build-acme:
+	cd src/cmd/acme && 9 mk install
+
+build-devdraw:
+	cd src/cmd/devdraw &&  9 mk install
+
+.PHONY: env build install full acme build-acme

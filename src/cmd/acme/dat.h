@@ -508,6 +508,13 @@ enum	/* editing */
 	Collecting
 };
 
+enum
+{
+	Knokey           = -1,
+	Kscrolloneup		= KF|0x20,
+	Kscrollonedown	= KF|0x21
+};
+
 uint		globalincref;
 uint		seq;
 uint		maxtab;	/* size of a tab, in units of the '0' character */
@@ -517,6 +524,7 @@ Image		*screen;
 Font			*font;
 Mouse		*mouse;
 Mousectl		*mousectl;
+Rune                modkey;
 Keyboardctl	*keyboardctl;
 Reffont		reffont;
 Image		*modbutton;
@@ -555,12 +563,6 @@ int			messagesize;		/* negotiated in 9P version setup */
 int			globalautoindent;
 int			dodollarsigns;
 char*		mtpt;
-
-enum
-{
-	Kscrolloneup		= KF|0x20,
-	Kscrollonedown	= KF|0x21
-};
 
 Channel	*cplumb;		/* chan(Plumbmsg*) */
 Channel	*cwait;		/* chan(Waitmsg) */
