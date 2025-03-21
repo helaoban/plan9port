@@ -32,6 +32,8 @@ int		mainpid;
 int		swapscrollbuttons = FALSE;
 char		*mtpt;
 
+int currentFontSize = 9;
+
 enum{
 	NSnarf = 1000	/* less than 1024, I/O buffer size */
 };
@@ -570,7 +572,10 @@ mousethread(void *v)
 			 * underfoot.  Can't just receive into m because this introduces
 			 * another race; see /sys/src/libdraw/mouse.c.
 			 */
+
+
 			m = mousectl->m;
+
 			qlock(&row.lk);
 			t = rowwhich(&row, m.xy);
 
@@ -614,17 +619,54 @@ mousethread(void *v)
 				}
 				goto Continue;
 			}
+
+			int ctrl = m.buttons & (1<<6);
+
 			/* scroll buttons, wheels, etc. */
 			if(w != nil && (m.buttons & (8|16))){
-				if(m.buttons & 8)
-					but = Kscrolloneup;
-				else
-					but = Kscrollonedown;
-				winlock(w, 'M');
-				t->eq0 = ~0;
-				texttype(t, but);
-				winunlock(w);
+			
+				if (ctrl) {
+
+					if ((m.buttons & 8) && (currentFontSize < 64)) {
+						currentFontSize++;
+					}
+
+					if ((m.buttons & 16) && (currentFontSize > 6)) {
+						currentFontSize--;
+					}
+
+					char buf[128];
+					sprint(buf, "/mnt/font/DejaVuSans/%da/font", currentFontSize);
+
+					Reffont *newfont = rfget(0, 1, 1, buf);
+					
+					if (newfont != nil && mousetext && mousetext->w != nil) {
+						/* rfclose(w->body.reffont); */
+						mousetext->w->body.reffont = newfont;
+						mousetext->w->body.fr.font = newfont->f;
+						winresize(mousetext->w, mousetext->w->r, TRUE, TRUE);
+						frinittick(&w->body.fr);
+						colgrow(w->col, w, -1);
+						flushimage(display, 1);
+					}
+
+				}
+
+				else {
+
+					if(m.buttons & 8)
+						but = Kscrolloneup;
+					else
+						but = Kscrollonedown;
+					winlock(w, 'M');
+					t->eq0 = ~0;
+					texttype(t, but);
+					winunlock(w);
+
+				}
+
 				goto Continue;
+
 			}
 			if(ptinrect(m.xy, t->scrollr)){
 				if(but){

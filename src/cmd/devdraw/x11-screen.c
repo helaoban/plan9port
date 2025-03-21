@@ -1447,6 +1447,10 @@ _xtoplan9mouse(Xwin *w, XEvent *e, Mouse *m)
 		m->buttons |= 8;
 	if(s & Button5Mask)
 		m->buttons |= 16;
+
+	if (_x.kstate & ControlMask)
+		m->buttons |= 1<<6;
+
 	return 0;
 }
 

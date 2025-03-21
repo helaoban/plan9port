@@ -1,7 +1,9 @@
 this-makefile	:= $(lastword $(MAKEFILE_LIST))
 srctree		:= $(realpath $(dir $(this-makefile)))
 
-export srctree
+X11 := $(GUIX_ENVIRONMENT)
+
+export srctree X11
 
 %:
 	@echo read the README file
@@ -12,14 +14,20 @@ env:
 	@ ./env
 
 build:
-	X11=$(GUIX_ENVIRONMENT) ./INSTALL -b
+	./INSTALL -b
 
 install:
-	X11=$(GUIX_ENVIRONMENT) ./INSTALL -c
+	./INSTALL -c
 
 full: build install
 
 acme:
-	9 acme -f "/mnt/font/DejaVuSansMono/11a/font"
+	cd src/cmd/acme && 9 mk install
+
+devdraw:
+	cd src/cmd/devdraw && 9 mk install
+
+run-acme:
+	cd dev && ./acme -f "/mnt/font/DejaVuSans/15a/font" -F "/mnt/font/DejaVuSansMono/15a/font"
 
 .PHONY: env build install full acme
